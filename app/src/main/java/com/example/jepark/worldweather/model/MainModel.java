@@ -1,4 +1,4 @@
-package com.example.jepark.worldweather;
+package com.example.jepark.worldweather.model;
 
 import android.content.Context;
 
@@ -23,8 +23,8 @@ public class MainModel {
      */
     public List<String> getCityList() {
         List<String> list = new ArrayList<>();
-        list.add("런던");
-        list.add("서울");
+        list.add("London");
+//        list.add("서울");
         return list;
     }
 }

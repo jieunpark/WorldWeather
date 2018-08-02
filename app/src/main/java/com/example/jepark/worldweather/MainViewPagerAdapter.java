@@ -36,7 +36,6 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter {
         bundle.putString(Config.BundleData.DATA_CITY_NAME, mCityDataList.get(position));
         fragment.setArguments(bundle);
         return fragment;
-
     }
 
     @Override

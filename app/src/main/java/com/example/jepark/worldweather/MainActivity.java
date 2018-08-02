@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.jepark.worldweather.databinding.ActivityMainBinding;
+import com.example.jepark.worldweather.viewmodel.MainViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding mBind = null;
+    private MainViewModel mMainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
         init();
         initLayout();
-
+        bindViewModel();
     }
 
     /**
@@ -40,5 +42,13 @@ public class MainActivity extends AppCompatActivity {
     private void initViewPager() {
         MainViewPagerAdapter adapter = new MainViewPagerAdapter(getSupportFragmentManager(), getApplicationContext());
         mBind.viewPager.setAdapter(adapter);
+    }
+
+    /**
+     * ViewModel 바인딩
+     */
+    private void bindViewModel() {
+        mMainViewModel = new MainViewModel(getApplicationContext());
+        mBind.setViewModel(mMainViewModel);
     }
 }
