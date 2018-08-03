@@ -3,6 +3,7 @@ package com.example.jepark.worldweather.retrofit;
 import com.example.jepark.worldweather.config.Config;
 import com.example.jepark.worldweather.vo.CurrentWeatherVO;
 
+import io.reactivex.Observable;
 import retrofit2.Call;
 
 /**
@@ -22,5 +23,14 @@ public class WeatherApiManager extends RetrofitManager {
      */
     public Call<CurrentWeatherVO> requestCurrentWeather(String cityName) {
         return createApi(ApiService.class).requestCurrentWeather(Config.APP_KEY, cityName);
+    }
+
+    /**
+     * 현재 날씨
+     * @param cityName
+     * @return
+     */
+    public Observable<CurrentWeatherVO> requestCurrentWeather2(String cityName) {
+        return createApi(ApiService.class).requestCurrentWeather2(Config.APP_KEY, cityName);
     }
 }

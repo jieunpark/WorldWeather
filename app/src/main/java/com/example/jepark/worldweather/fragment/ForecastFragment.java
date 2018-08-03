@@ -14,6 +14,12 @@ import com.example.jepark.worldweather.R;
 import com.example.jepark.worldweather.config.Config;
 import com.example.jepark.worldweather.databinding.FragmentForecastBinding;
 import com.example.jepark.worldweather.viewmodel.ForecastViewModel;
+import com.example.jepark.worldweather.vo.CurrentWeatherVO;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by jepark on 2018. 8. 1..
@@ -29,6 +35,8 @@ public class ForecastFragment extends Fragment {
 
     private ForecastViewModel mViewModel;
 
+    private CompositeDisposable mCompositeDisposable;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +49,7 @@ public class ForecastFragment extends Fragment {
         View view = mBind.getRoot();
 
         bindViewModel();
+        bindObservable();
         return view;
     }
 
@@ -51,10 +60,15 @@ public class ForecastFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mCity = bundle.getString(Config.BundleData.DATA_CITY_NAME);
-            mViewModel.setCity(mCity);
+//            mViewModel.setCity(mCity);
         }
 
-        mViewModel.requestApi();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unBindObservable();
     }
 
     /**
@@ -64,5 +78,39 @@ public class ForecastFragment extends Fragment {
         mViewModel = new ForecastViewModel(mContext);
         mBind.setViewModel(mViewModel);
 
+
+
+    }
+
+    private void bindObservable() {
+        mCompositeDisposable = new CompositeDisposable();
+
+        mCompositeDisposable.add(mViewModel.getCurrentWeather(mCity)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(new DisposableObserver<CurrentWeatherVO>() {
+
+            @Override
+            public void onNext(CurrentWeatherVO currentWeatherVO) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        }));
+
+    }
+
+    private void unBindObservable() {
+        if (mCompositeDisposable != null) {
+            mCompositeDisposable.clear();
+        }
     }
 }
