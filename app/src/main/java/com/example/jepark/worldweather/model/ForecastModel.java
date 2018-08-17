@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.example.jepark.worldweather.config.Config;
 import com.example.jepark.worldweather.retrofit.WeatherApiManager;
+import com.example.jepark.worldweather.util.Utility;
 import com.example.jepark.worldweather.vo.CurrentWeatherVO;
+import com.example.jepark.worldweather.vo.ForecastVO;
 import com.example.jepark.worldweather.vo.MainVO;
 import com.example.jepark.worldweather.vo.WeatherVO;
 
@@ -32,20 +34,25 @@ public class ForecastModel {
         mWeatherManager = new WeatherApiManager(Config.BASE_URL);
     }
 
-    public Observable<CurrentWeatherVO> getCurrentWeather(String city) {
+    public Observable<ForecastVO> getCurrentWeather(String city) {
         return mWeatherManager.requestCurrentWeather2(city)
                 .flatMap(cWeatherVO -> convertTempData(cWeatherVO));
 
 
     }
 
-    private Observable<CurrentWeatherVO> convertTempData(CurrentWeatherVO currentWeatherVO) {
-        CurrentWeatherVO temp = currentWeatherVO;
-        MainVO mainVO = temp.getMain();
-        mainVO.setTemp(mainVO.getTemp() - Config.TEMP_DIFF);
-        mainVO.setTemp_min(mainVO.getTemp_min() - Config.TEMP_DIFF);
-        mainVO.setTemp_max(mainVO.getTemp_max() - Config.TEMP_DIFF);
-        return Observable.just(temp);
+    private Observable<ForecastVO> convertTempData(CurrentWeatherVO currentWeatherVO) {
+
+        MainVO mainVO = currentWeatherVO.getMain();
+
+        ForecastVO forecastVO = new ForecastVO();
+        forecastVO.setCityName(currentWeatherVO.getName());
+        forecastVO.setDesc(currentWeatherVO.getWeather().get(0).getDescription());
+        forecastVO.setTemp(Utility.getFormatTemp(mainVO.getTemp() - Config.TEMP_DIFF));
+        forecastVO.setTempMin(Utility.getFormatTemp(mainVO.getTemp_min() - Config.TEMP_DIFF));
+        forecastVO.setTempMax(Utility.getFormatTemp(mainVO.getTemp_max() - Config.TEMP_DIFF));
+
+        return Observable.just(forecastVO);
     }
 }
 //    public void requestCurrentWeather() {

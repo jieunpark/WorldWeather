@@ -5,14 +5,14 @@ package com.example.jepark.worldweather.vo;
  */
 
 public class WindVO {
-    private int speed; // 바람 스피드 Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
+    private float speed; // 바람 스피드 Unit Default: meter/sec, Metric: meter/sec, Imperial: miles/hour.
     private int deg; // 바람 방향
 
-    public int getSpeed() {
+    public float getSpeed() {
         return speed;
     }
 
-    public void setSpeed(int speed) {
+    public void setSpeed(float speed) {
         this.speed = speed;
     }
 

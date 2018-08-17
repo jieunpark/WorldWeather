@@ -10,6 +10,7 @@ public class Config {
     public static final String APP_KEY = "aa18ab29dd167e09251ea2d4a571d2df";
 
     public static final float TEMP_DIFF = 273.15f;
+    public static final String TEMP_UNIT = "°C";
 
     public class BundleData {
         public static final String DATA_CITY_NAME = "city";

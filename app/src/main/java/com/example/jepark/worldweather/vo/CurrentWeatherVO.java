@@ -1,5 +1,7 @@
 package com.example.jepark.worldweather.vo;
 
+import java.util.List;
+
 /**
  * Created by jepark on 2018. 8. 2..
  */
@@ -7,7 +9,7 @@ package com.example.jepark.worldweather.vo;
 public class CurrentWeatherVO {
 
     private CoordVO coord;
-    private WeatherVO weather;
+    private List<WeatherVO> weather;
     private MainVO main;
     private WindVO wind;
     private CloudVO clouds;
@@ -23,11 +25,11 @@ public class CurrentWeatherVO {
         this.coord = coord;
     }
 
-    public WeatherVO getWeather() {
+    public List<WeatherVO> getWeather() {
         return weather;
     }
 
-    public void setWeather(WeatherVO weather) {
+    public void setWeather(List<WeatherVO> weather) {
         this.weather = weather;
     }
 

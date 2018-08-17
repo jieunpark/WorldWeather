@@ -15,6 +15,7 @@ import com.example.jepark.worldweather.config.Config;
 import com.example.jepark.worldweather.databinding.FragmentForecastBinding;
 import com.example.jepark.worldweather.viewmodel.ForecastViewModel;
 import com.example.jepark.worldweather.vo.CurrentWeatherVO;
+import com.example.jepark.worldweather.vo.ForecastVO;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -49,7 +50,7 @@ public class ForecastFragment extends Fragment {
         View view = mBind.getRoot();
 
         bindViewModel();
-        bindObservable();
+
         return view;
     }
 
@@ -60,8 +61,9 @@ public class ForecastFragment extends Fragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             mCity = bundle.getString(Config.BundleData.DATA_CITY_NAME);
-//            mViewModel.setCity(mCity);
         }
+
+        bindObservable();
 
     }
 
@@ -88,24 +90,24 @@ public class ForecastFragment extends Fragment {
         mCompositeDisposable.add(mViewModel.getCurrentWeather(mCity)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<CurrentWeatherVO>() {
+        .subscribeWith(new DisposableObserver<ForecastVO>() {
 
             @Override
-            public void onNext(CurrentWeatherVO currentWeatherVO) {
-
+            public void onNext(ForecastVO forecastVO) {
+                Log.e(TAG," @@@ onNext : " + forecastVO);
+                mViewModel.setForecastData(forecastVO);
             }
 
             @Override
             public void onError(Throwable e) {
-
+                Log.e(TAG," @@@ onError : " + e.getMessage());
             }
 
             @Override
             public void onComplete() {
-
+                Log.e(TAG," @@@ onComplete : " );
             }
         }));
-
     }
 
     private void unBindObservable() {
