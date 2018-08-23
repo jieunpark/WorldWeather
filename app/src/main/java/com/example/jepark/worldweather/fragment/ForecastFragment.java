@@ -5,22 +5,20 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.jepark.worldweather.MainActivity;
 import com.example.jepark.worldweather.R;
 import com.example.jepark.worldweather.config.Config;
 import com.example.jepark.worldweather.databinding.FragmentForecastBinding;
 import com.example.jepark.worldweather.viewmodel.ForecastViewModel;
-import com.example.jepark.worldweather.vo.CurrentWeatherVO;
-import com.example.jepark.worldweather.vo.ForecastVO;
+import com.example.jepark.worldweather.viewmodel.MainViewModel;
+import com.example.jepark.worldweather.vo.LocationVO;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by jepark on 2018. 8. 1..
@@ -31,12 +29,13 @@ public class ForecastFragment extends Fragment {
     private static final String TAG = "ForecastFragment";
     private Context mContext;
 
-    private FragmentForecastBinding mBind;
     private String mCity;
 
+    private FragmentForecastBinding mBind;
     private ForecastViewModel mViewModel;
+    private MainViewModel mMainViewModel;
 
-    private CompositeDisposable mCompositeDisposable;
+//    private CompositeDisposable mCompositeDisposable;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,13 +63,12 @@ public class ForecastFragment extends Fragment {
         }
 
         bindObservable();
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        unBindObservable();
+        unBindViewModel();
     }
 
     /**
@@ -80,39 +78,65 @@ public class ForecastFragment extends Fragment {
         mViewModel = new ForecastViewModel(mContext);
         mBind.setViewModel(mViewModel);
 
-
-
+        mMainViewModel = ((MainActivity)getActivity()).getMainViewModel();
     }
 
+    /**
+     * ViewModel 언바인딩
+     */
+    private void unBindViewModel() {
+        mViewModel.clearDisposable();
+        mMainViewModel.clearDisposable();
+    }
+
+    /**
+     * 데이터발행 바인딩
+     */
     private void bindObservable() {
-        mCompositeDisposable = new CompositeDisposable();
+        mMainViewModel.getCurrentLocation()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<LocationVO>() {
+                    @Override
+                    public void onNext(LocationVO locationVO) {
+                        mViewModel.getCurrentWeatherByGeo(locationVO.getLat(), locationVO.getLon());
+                    }
 
-        mCompositeDisposable.add(mViewModel.getCurrentWeather(mCity)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeWith(new DisposableObserver<ForecastVO>() {
+                    @Override
+                    public void onError(Throwable e) {
 
-            @Override
-            public void onNext(ForecastVO forecastVO) {
-                Log.e(TAG," @@@ onNext : " + forecastVO);
-                mViewModel.setForecastData(forecastVO);
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.e(TAG," @@@ onError : " + e.getMessage());
-            }
+                    @Override
+                    public void onComplete() {
 
-            @Override
-            public void onComplete() {
-                Log.e(TAG," @@@ onComplete : " );
-            }
-        }));
+                    }
+                });
     }
 
-    private void unBindObservable() {
-        if (mCompositeDisposable != null) {
-            mCompositeDisposable.clear();
-        }
-    }
+//    private void bindObservable() {
+//        mCompositeDisposable = new CompositeDisposable();
+//
+//        mCompositeDisposable.add(mViewModel.getCurrentWeather(mCity)
+//        .subscribeOn(Schedulers.io())
+//        .observeOn(AndroidSchedulers.mainThread())
+//        .subscribeWith(new DisposableObserver<ForecastVO>() {
+//
+//            @Override
+//            public void onNext(ForecastVO forecastVO) {
+//                Log.e(TAG," @@@ onNext : " + forecastVO);
+//                mViewModel.setForecastData(forecastVO);
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                Log.e(TAG," @@@ onError : " + e.getMessage());
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//                Log.e(TAG," @@@ onComplete : " );
+//            }
+//        }));
+//    }
+
 }

@@ -2,6 +2,8 @@ package com.example.jepark.worldweather.model;
 
 import android.content.Context;
 
+import com.example.jepark.worldweather.viewmodel.DisposableViewModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  * Created by jepark on 2018. 8. 1..
  */
 
-public class MainModel {
+public class MainModel extends DisposableViewModel {
 
     private Context mContext;
 
@@ -23,7 +25,7 @@ public class MainModel {
      */
     public List<String> getCityList() {
         List<String> list = new ArrayList<>();
-        list.add("London");
+        list.add("Current");
 //        list.add("서울");
         return list;
     }

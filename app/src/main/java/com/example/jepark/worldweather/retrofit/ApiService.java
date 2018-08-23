@@ -21,4 +21,9 @@ public interface ApiService {
     Observable<CurrentWeatherVO> requestCurrentWeather2(@Query("APPID") String appId,
                                                        @Query("q") String cityName);
 
+    @GET("weather")
+    Observable<CurrentWeatherVO> requestCurrentWeatherByGeo(@Query("APPID") String appId,
+                                                            @Query("lat") double lat,
+                                                            @Query("lon") double lon);
+
 }

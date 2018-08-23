@@ -33,4 +33,14 @@ public class WeatherApiManager extends RetrofitManager {
     public Observable<CurrentWeatherVO> requestCurrentWeather2(String cityName) {
         return createApi(ApiService.class).requestCurrentWeather2(Config.APP_KEY, cityName);
     }
+
+    /**
+     * 현재 날씨 (위도,경도)
+     * @param lat
+     * @param lon
+     * @return
+     */
+    public Observable<CurrentWeatherVO> requestCurrentWeatherByGeo(double lat, double lon) {
+        return createApi(ApiService.class).requestCurrentWeatherByGeo(Config.APP_KEY, lat, lon);
+    }
 }

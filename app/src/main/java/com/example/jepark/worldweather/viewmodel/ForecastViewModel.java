@@ -11,12 +11,15 @@ import com.example.jepark.worldweather.vo.ForecastObservableVO;
 import com.example.jepark.worldweather.vo.ForecastVO;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DisposableObserver;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by jepark on 2018. 8. 2..
  */
 
-public class ForecastViewModel extends BaseObservable {
+public class ForecastViewModel extends DisposableViewModel {
 
     private ForecastModel mModel;
 
@@ -36,7 +39,30 @@ public class ForecastViewModel extends BaseObservable {
         return mModel.getCurrentWeather(city);
     }
 
-    public void setForecastData(ForecastVO forecastVO) {
+    public void getCurrentWeatherByGeo(double lat, double lon) {
+        addDisposable(mModel.getCurrentWeatherByGeo(lat, lon)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+        .subscribeWith(new DisposableObserver<ForecastVO>() {
+
+            @Override
+            public void onNext(ForecastVO forecastVO) {
+                setForecastData(forecastVO);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        }));
+    }
+
+    private void setForecastData(ForecastVO forecastVO) {
         forecastObservable.setCityName(forecastVO.getCityName());
         forecastObservable.setDesc(forecastVO.getDesc());
         forecastObservable.setTemp(forecastVO.getTemp() + Config.TEMP_UNIT);

@@ -41,6 +41,11 @@ public class ForecastModel {
 
     }
 
+    public Observable<ForecastVO> getCurrentWeatherByGeo(double lat, double lon) {
+        return mWeatherManager.requestCurrentWeatherByGeo(lat, lon)
+                .flatMap(cWeatherVO -> convertTempData(cWeatherVO));
+    }
+
     private Observable<ForecastVO> convertTempData(CurrentWeatherVO currentWeatherVO) {
 
         MainVO mainVO = currentWeatherVO.getMain();
